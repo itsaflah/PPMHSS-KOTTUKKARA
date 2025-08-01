@@ -1,0 +1,421 @@
+// JavaScript for School Website Functionality
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all functionality
+    initNavbar();
+    initSmoothScrolling();
+    initBackToTop();
+    initAnimations();
+    initContactForm();
+});
+
+// Navbar functionality
+function initNavbar() {
+    const navbar = document.getElementById('mainNav');
+    
+    // Handle navbar background on scroll
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 100) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    
+    // Close mobile menu when clicking on a link
+    const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navbarCollapse.classList.contains('show')) {
+                const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+                bsCollapse.hide();
+            }
+        });
+    });
+}
+
+// Smooth scrolling for navigation links
+function initSmoothScrolling() {
+    const navLinks = document.querySelectorAll('a[href^="#"]');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                const offsetTop = targetSection.offsetTop - 80; // Account for fixed navbar
+                
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
+
+// Back to top button functionality
+function initBackToTop() {
+    const backToTopBtn = document.getElementById('backToTop');
+    
+    // Show/hide button based on scroll position
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            backToTopBtn.classList.add('show');
+        } else {
+            backToTopBtn.classList.remove('show');
+        }
+    });
+    
+    // Scroll to top when clicked
+    backToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
+// Animation on scroll
+function initAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+    
+    // Add fade-in class to elements that should animate
+    const animateElements = document.querySelectorAll('.stat-card, .feature-card, .staff-card, .event-card, .gallery-item, .download-card');
+    
+    animateElements.forEach(el => {
+        el.classList.add('fade-in');
+        observer.observe(el);
+    });
+}
+
+// Contact form handling (non-functional demo)
+function initContactForm() {
+    const contactForm = document.querySelector('#contact form');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const name = formData.get('name') || document.getElementById('name').value;
+            const email = formData.get('email') || document.getElementById('email').value;
+            const message = formData.get('message') || document.getElementById('message').value;
+            
+            // Simple validation
+            if (!name || !email || !message) {
+                showAlert('Please fill in all required fields.', 'danger');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showAlert('Please enter a valid email address.', 'danger');
+                return;
+            }
+            
+            // Simulate form submission
+            showAlert('Thank you for your message! We will get back to you soon.', 'success');
+            this.reset();
+        });
+    }
+}
+
+// Email validation helper
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Show alert messages
+function showAlert(message, type = 'info') {
+    // Create alert element
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 100px; right: 20px; z-index: 9999; min-width: 300px;';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Add to page
+    document.body.appendChild(alertDiv);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+// Gallery image modal functionality
+function initGalleryModal() {
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    
+    galleryItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const img = this.querySelector('.gallery-image');
+            const title = this.querySelector('.gallery-overlay h5').textContent;
+            const description = this.querySelector('.gallery-overlay p').textContent;
+            
+            // Create modal (you can enhance this with Bootstrap modal)
+            showImageModal(img.src, title, description);
+        });
+    });
+}
+
+// Show image in modal (basic implementation)
+function showImageModal(src, title, description) {
+    // Create modal backdrop
+    const modalBackdrop = document.createElement('div');
+    modalBackdrop.className = 'modal-backdrop';
+    modalBackdrop.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    `;
+    
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        max-width: 90%;
+        max-height: 90%;
+        text-align: center;
+        cursor: default;
+    `;
+    modalContent.innerHTML = `
+        <img src="${src}" alt="${title}" style="max-width: 100%; max-height: 80vh; border-radius: 10px;">
+        <h4 style="color: white; margin-top: 1rem;">${title}</h4>
+        <p style="color: #ccc;">${description}</p>
+    `;
+    
+    modalBackdrop.appendChild(modalContent);
+    document.body.appendChild(modalBackdrop);
+    
+    // Close modal when clicking backdrop
+    modalBackdrop.addEventListener('click', function(e) {
+        if (e.target === modalBackdrop) {
+            document.body.removeChild(modalBackdrop);
+        }
+    });
+    
+    // Close modal with Escape key
+    const escapeHandler = function(e) {
+        if (e.key === 'Escape') {
+            document.body.removeChild(modalBackdrop);
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    };
+    document.addEventListener('keydown', escapeHandler);
+    
+    // Prevent content click from closing modal
+    modalContent.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+}
+
+// Download functionality for files
+function initDownloads() {
+    const downloadLinks = document.querySelectorAll('.download-card .btn');
+    
+    downloadLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const fileName = this.closest('.download-card').querySelector('h5').textContent;
+            
+            // Since these are demo files, show a message
+            showAlert(`Download for "${fileName}" would start here. Please replace with actual file links.`, 'info');
+        });
+    });
+}
+
+// Initialize additional features when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initGalleryModal();
+    initDownloads();
+    
+    // Add loading animation
+    document.body.classList.add('loaded');
+});
+
+// Utility function to format dates
+function formatDate(date) {
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    return new Date(date).toLocaleDateString('en-US', options);
+}
+
+// Utility function to truncate text
+function truncateText(text, maxLength) {
+    if (text.length <= maxLength) return text;
+    return text.substr(0, maxLength) + '...';
+}
+
+// Performance optimization: Lazy loading for images
+function initLazyLoading() {
+    const images = document.querySelectorAll('img[data-src]');
+    
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+    
+    images.forEach(img => imageObserver.observe(img));
+}
+
+// Search functionality (if needed)
+function initSearch() {
+    const searchInput = document.getElementById('searchInput');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const searchableElements = document.querySelectorAll('[data-searchable]');
+            
+            searchableElements.forEach(element => {
+                const text = element.textContent.toLowerCase();
+                const parent = element.closest('.col-lg-4, .col-md-6, .col-lg-3');
+                
+                if (text.includes(searchTerm) || searchTerm === '') {
+                    parent.style.display = 'block';
+                } else {
+                    parent.style.display = 'none';
+                }
+            });
+        });
+    }
+}
+
+// Print functionality
+function printPage() {
+    window.print();
+}
+
+// Share functionality
+function shareContent(title, url) {
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            url: url
+        });
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(url).then(() => {
+            showAlert('Link copied to clipboard!', 'success');
+        });
+    }
+}
+
+// Accessibility improvements
+function initAccessibility() {
+    // Add skip to content link
+    const skipLink = document.createElement('a');
+    skipLink.href = '#main-content';
+    skipLink.textContent = 'Skip to main content';
+    skipLink.className = 'sr-only sr-only-focusable';
+    skipLink.style.cssText = `
+        position: absolute;
+        top: -40px;
+        left: 6px;
+        z-index: 10000;
+        color: white;
+        background: #007bff;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+    `;
+    
+    document.body.insertBefore(skipLink, document.body.firstChild);
+    
+    // Focus management for modals
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+            // Handle tab navigation in modals
+            const modal = document.querySelector('.modal-backdrop');
+            if (modal) {
+                // Trap focus within modal
+                const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+                
+                if (e.shiftKey && document.activeElement === firstElement) {
+                    lastElement.focus();
+                    e.preventDefault();
+                } else if (!e.shiftKey && document.activeElement === lastElement) {
+                    firstElement.focus();
+                    e.preventDefault();
+                }
+            }
+        }
+    });
+}
+
+// Initialize accessibility features
+document.addEventListener('DOMContentLoaded', function() {
+    initAccessibility();
+});
+
+// Error handling for images
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('img');
+    
+    images.forEach(img => {
+        img.addEventListener('error', function() {
+            // Replace broken images with placeholder
+            this.src = 'https://via.placeholder.com/400x300/f8f9fa/6c757d?text=Image+Not+Found';
+            this.alt = 'Image not available';
+        });
+    });
+});
+
+// Console welcome message
+console.log(`
+🏫 Greenwood Higher Secondary School Website
+📚 Built with HTML, CSS, Bootstrap & JavaScript
+🎓 Ready for customization!
+
+To customize this website:
+1. Replace placeholder images with actual school photos
+2. Update text content in HTML files
+3. Modify colors in CSS variables
+4. Add actual contact information
+5. Replace social media links
+6. Add real download files
+
+Happy coding! 🚀
+`);

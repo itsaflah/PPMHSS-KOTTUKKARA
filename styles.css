@@ -65,10 +65,11 @@ body {
 }
 
 .hero-overlay {
-  background: rgba(0, 0, 0, 0.3);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
+  background: rgba(0, 0, 0, 0.3); /* semi-transparent black */
+  border-radius: 2rem;           /* makes it rounded */
+  padding: 2rem;                 /* optional: adds inner space */
+  backdrop-filter: blur(1px);    /* adds a frosted-glass effect */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* soft shadow */
 }
 
 .hero-buttons .btn {

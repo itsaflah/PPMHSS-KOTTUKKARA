@@ -12,15 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Navbar functionality
 function initNavbar() {
     const navbar = document.getElementById('mainNav');
-    
-    // Handle navbar background on scroll
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 100) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-    });
+
     
     // Close mobile menu when clicking on a link
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');

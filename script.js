@@ -404,20 +404,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
-// Console welcome message
-console.log(`
-🏫 Greenwood Higher Secondary School Website
-📚 Built with HTML, CSS, Bootstrap & JavaScript
-🎓 Ready for customization!
-
-To customize this website:
-1. Replace placeholder images with actual school photos
-2. Update text content in HTML files
-3. Modify colors in CSS variables
-4. Add actual contact information
-5. Replace social media links
-6. Add real download files
-
-Happy coding! 🚀
-`);

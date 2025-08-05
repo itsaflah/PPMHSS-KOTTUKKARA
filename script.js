@@ -16,8 +16,8 @@ function includeHTML(file, elementId) {
       .then(data => document.getElementById(elementId).innerHTML = data);
   }
 
-  includeHTML('common/navbar.html', 'navbar-placeholder');
-  includeHTML('common/footer.html', 'footer-placeholder');
+  includeHTML('/ppmhsskottukkara/common/navbar.html', 'navbar-placeholder');
+  includeHTML('/ppmhsskottukkara/common/footer.html', 'footer-placeholder');
 
 // Navbar functionality
 function initNavbar() {

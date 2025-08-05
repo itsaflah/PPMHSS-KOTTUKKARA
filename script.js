@@ -9,6 +9,16 @@ document.addEventListener('DOMContentLoaded', function() {
     initContactForm();
 });
 
+//footer and navbar
+function includeHTML(file, elementId) {
+    fetch(file)
+      .then(response => response.text())
+      .then(data => document.getElementById(elementId).innerHTML = data);
+  }
+
+  includeHTML('/Common/navbar.html', 'navbar-placeholder');
+  includeHTML('/Common/footer.html', 'footer-placeholder');
+
 // Navbar functionality
 function initNavbar() {
     const navbar = document.getElementById('mainNav');

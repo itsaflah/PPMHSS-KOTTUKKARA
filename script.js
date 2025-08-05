@@ -399,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function() {
     images.forEach(img => {
         img.addEventListener('error', function() {
             // Replace broken images with placeholder
-            this.src = 'https://via.placeholder.com/400x300/f8f9fa/6c757d?text=Image+Not+Found';
+            this.src = 'images/Main/images.jpg';
             this.alt = 'Image not available';
         });
     });

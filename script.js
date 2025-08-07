@@ -114,30 +114,59 @@ function initContactForm() {
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             // Get form data
             const formData = new FormData(this);
             const name = formData.get('name') || document.getElementById('name').value;
             const email = formData.get('email') || document.getElementById('email').value;
             const message = formData.get('message') || document.getElementById('message').value;
-            
+
             // Simple validation
             if (!name || !email || !message) {
                 showAlert('Please fill in all required fields.', 'danger');
                 return;
             }
-            
+
             if (!isValidEmail(email)) {
                 showAlert('Please enter a valid email address.', 'danger');
                 return;
             }
-            
-            // Simulate form submission
-            showAlert('Thank you for your message! We will get back to you soon.', 'success');
-            this.reset();
+
+            // Add hidden fields (if not already in the form)
+            formData.append("formDataNameOrder", JSON.stringify(["name", "email", "message"]));
+            formData.append("formGoogleSheetName", "responses"); // Optional: your sheet name
+            formData.append("formGoogleSendEmail", email); // Optional: to send replyTo in Apps Script
+
+            // Convert FormData to plain object
+            const plainFormData = {};
+            formData.forEach((value, key) => plainFormData[key] = value);
+
+            // Send data to Google Apps Script Web App
+            fetch("https://script.google.com/macros/s/AKfycbyRc63l8szf6FRStM4_LxLOGUDiArdR6ta5tSwSnK3vzdXf3b1Pb57BiJtxcqSoHnU0nQ/exec", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(plainFormData)
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.result === "success") {
+                    showAlert("Thank you! Your message was sent successfully.", "success");
+                    contactForm.reset();
+                } else {
+                    showAlert("Oops! Something went wrong.", "danger");
+                    console.error(response);
+                }
+            })
+            .catch(error => {
+                showAlert("Failed to send. Try again later.", "danger");
+                console.error("Error:", error);
+            });
         });
     }
 }
+
 
 // Email validation helper
 function isValidEmail(email) {

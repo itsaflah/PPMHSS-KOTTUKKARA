@@ -106,60 +106,25 @@ function initAnimations() {
     });
 }
 
-// Email validation
-function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-// Show alert messages
-function showAlert(message, type = 'info') {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    alertDiv.style.cssText = 'top: 100px; right: 20px; z-index: 9999; min-width: 300px;';
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    document.body.appendChild(alertDiv);
-
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
-        }
-    }, 5000);
-}
 
 // Form submission
-$("#submit-form").submit((e) => {
-    e.preventDefault();
-
-    const email = $("#email").val();
-    const submitButton = $("#submit-form button[type='submit']");
-    
-    if (!isValidEmail(email)) {
-        showAlert("Please enter a valid email address.", "warning");
-        return;
-    }
-
-    submitButton.prop("disabled", true).text("Sending...");
-
-    $.ajax({
-        url: "https://script.google.com/macros/s/AKfycbyRc63l8szf6FRStM4_LxLOGUDiArdR6ta5tSwSnK3vzdXf3b1Pb57BiJtxcqSoHnU0nQ/exec",
-        method: "POST",
-        data: $("#submit-form").serialize(),
-        success: function (response) {
-            showAlert("Form submitted successfully!", "success");
-            $("#submit-form")[0].reset();
-        },
-        error: function (err) {
-            showAlert("Something went wrong. Please try again later.", "danger");
-        },
-        complete: function () {
-            submitButton.prop("disabled", false).text("Send Message");
-        }
-    });
-});
-
+$("#submit-form").submit(function (e) {
+            e.preventDefault();
+            
+            $.ajax({
+                url: "https://script.google.com/macros/s/AKfycbyRc63l8szf6FRStM4_LxLOGUDiArdR6ta5tSwSnK3vzdXf3b1Pb57BiJtxcqSoHnU0nQ/exec",
+                method: "POST",
+                data: $(this).serialize(),
+                success: function (response) {
+                    alert("Form submitted successfully");
+                    window.location.href = "https://google.com";
+                },
+                error: function (error) {
+                    alert("Something went wrong. Please try again.");
+                    console.error(error);
+                }
+            });
+        });
 
 
 

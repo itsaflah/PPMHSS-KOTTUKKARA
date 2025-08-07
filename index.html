@@ -822,13 +822,18 @@
 
     <!-- ✅ Then your custom script that uses jQuery -->
     <script>
+
         $("#submit-form").submit(function (e) {
             e.preventDefault();
+
+            const $form = $(this);
+            const $submitButton = $form.find("button[type='submit']");
+            $submitButton.prop("disabled", true).text("Submitting...");
 
             $.ajax({
                 url: "https://script.google.com/macros/s/AKfycbz81LTjA7nGI5PAj-oT2O1MlNKpP7Lo0rnkY8ExJsg-uMYAJx84XRTtdyCEtXydfmHe5g/exec",
                 method: "GET",
-                data: $(this).serialize(),
+                data: $form.serialize(),
                 success: function (response) {
                     alert("Form submitted successfully");
                     window.location.href = "https://google.com";
@@ -836,9 +841,11 @@
                 error: function (error) {
                     alert("Something went wrong. Please try again.");
                     console.error(error);
+                    $submitButton.prop("disabled", false).text("Submit");
                 }
             });
         });
+
     </script>
 
 

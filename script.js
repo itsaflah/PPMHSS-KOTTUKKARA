@@ -107,21 +107,23 @@ function initAnimations() {
     });
 }
 
-// Contact form handling (non-functional demo)
 function initContactForm() {
-    const contactForm = document.querySelector('#contact form');
-    
+    const contactForm = document.querySelector('#contact-form'); // your <form id="contact-form">
+
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // Get form data
             const formData = new FormData(this);
-            const name = formData.get('name') || document.getElementById('name').value;
-            const email = formData.get('email') || document.getElementById('email').value;
-            const message = formData.get('message') || document.getElementById('message').value;
 
-            // Simple validation
+            // Extract form data
+            const name = formData.get('name') || '';
+            const email = formData.get('email') || '';
+            const phone = formData.get('phone') || '';
+            const subject = formData.get('subject') || '';
+            const message = formData.get('message') || '';
+
+            // Validation
             if (!name || !email || !message) {
                 showAlert('Please fill in all required fields.', 'danger');
                 return;
@@ -132,16 +134,18 @@ function initContactForm() {
                 return;
             }
 
-            // Add hidden fields (if not already in the form)
-            formData.append("formDataNameOrder", JSON.stringify(["name", "email", "message"]));
-            formData.append("formGoogleSheetName", "responses"); // Optional: your sheet name
-            formData.append("formGoogleSendEmail", email); // Optional: to send replyTo in Apps Script
+            // Add required hidden metadata
+            formData.append("formDataNameOrder", JSON.stringify(["name", "email", "phone", "subject", "message"]));
+            formData.append("formGoogleSheetName", "responses");
+            formData.append("formGoogleSendEmail", email);
 
-            // Convert FormData to plain object
+            // Convert to plain object
             const plainFormData = {};
-            formData.forEach((value, key) => plainFormData[key] = value);
+            formData.forEach((value, key) => {
+                plainFormData[key] = value;
+            });
 
-            // Send data to Google Apps Script Web App
+            // Submit to Apps Script
             fetch("https://script.google.com/macros/s/AKfycbyRc63l8szf6FRStM4_LxLOGUDiArdR6ta5tSwSnK3vzdXf3b1Pb57BiJtxcqSoHnU0nQ/exec", {
                 method: "POST",
                 headers: {
@@ -149,30 +153,29 @@ function initContactForm() {
                 },
                 body: JSON.stringify(plainFormData)
             })
-            .then(res => res.json())
-            .then(response => {
-                if (response.result === "success") {
-                    showAlert("Thank you! Your message was sent successfully.", "success");
-                    contactForm.reset();
-                } else {
-                    showAlert("Oops! Something went wrong.", "danger");
-                    console.error(response);
-                }
-            })
-            .catch(error => {
-                showAlert("Failed to send. Try again later.", "danger");
-                console.error("Error:", error);
-            });
+                .then(res => res.json())
+                .then(response => {
+                    if (response.result === "success") {
+                        showAlert("Thank you! Your message was sent successfully.", "success");
+                        contactForm.reset();
+                    } else {
+                        showAlert("Oops! Something went wrong.", "danger");
+                        console.error(response);
+                    }
+                })
+                .catch(error => {
+                    showAlert("Failed to send. Try again later.", "danger");
+                    console.error("Error:", error);
+                });
         });
     }
 }
 
-
-// Email validation helper
+// Email validation
 function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
+
 
 // Show alert messages
 function showAlert(message, type = 'info') {

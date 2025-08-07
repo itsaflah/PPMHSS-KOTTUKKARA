@@ -106,33 +106,13 @@ function initAnimations() {
     });
 }
 
-$("#submit-form").submit((e)=>{
-            e.preventDefault()
-            $.ajax({
-                url:"",
-                data:$("#submit-form").serialize(),
-                method:"post",
-                success:function (response){
-                    alert("Form submitted successfully")
-                    window.location.reload()
-                    //window.location.href="https://google.com"
-                },
-                error:function (err){
-                    alert("Something Error")
-    
-                }
-            })
-        })
-
 // Email validation
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-
 // Show alert messages
 function showAlert(message, type = 'info') {
-    // Create alert element
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
     alertDiv.style.cssText = 'top: 100px; right: 20px; z-index: 9999; min-width: 300px;';
@@ -140,17 +120,46 @@ function showAlert(message, type = 'info') {
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
-    
-    // Add to page
     document.body.appendChild(alertDiv);
-    
-    // Auto remove after 5 seconds
+
     setTimeout(() => {
         if (alertDiv.parentNode) {
             alertDiv.remove();
         }
     }, 5000);
 }
+
+// Form submission
+$("#submit-form").submit((e) => {
+    e.preventDefault();
+
+    const email = $("#email").val();
+    const submitButton = $("#submit-form button[type='submit']");
+    
+    if (!isValidEmail(email)) {
+        showAlert("Please enter a valid email address.", "warning");
+        return;
+    }
+
+    submitButton.prop("disabled", true).text("Sending...");
+
+    $.ajax({
+        url: "https://script.google.com/macros/s/AKfycbyRc63l8szf6FRStM4_LxLOGUDiArdR6ta5tSwSnK3vzdXf3b1Pb57BiJtxcqSoHnU0nQ/exec",
+        method: "POST",
+        data: $("#submit-form").serialize(),
+        success: function (response) {
+            showAlert("Form submitted successfully!", "success");
+            $("#submit-form")[0].reset();
+        },
+        error: function (err) {
+            showAlert("Something went wrong. Please try again later.", "danger");
+        },
+        complete: function () {
+            submitButton.prop("disabled", false).text("Send Message");
+        }
+    });
+});
+
 
 // Gallery image modal functionality
 function initGalleryModal() {

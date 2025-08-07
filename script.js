@@ -129,6 +129,38 @@ function showAlert(message, type = 'info') {
     }, 5000);
 }
 
+// Form submission
+$("#submit-form").submit((e) => {
+    e.preventDefault();
+
+    const email = $("#email").val();
+    const submitButton = $("#submit-form button[type='submit']");
+    
+    if (!isValidEmail(email)) {
+        showAlert("Please enter a valid email address.", "warning");
+        return;
+    }
+
+    submitButton.prop("disabled", true).text("Sending...");
+
+    $.ajax({
+        url: "https://script.google.com/macros/s/AKfycbyRc63l8szf6FRStM4_LxLOGUDiArdR6ta5tSwSnK3vzdXf3b1Pb57BiJtxcqSoHnU0nQ/exec",
+        method: "POST",
+        data: $("#submit-form").serialize(),
+        success: function (response) {
+            showAlert("Form submitted successfully!", "success");
+            $("#submit-form")[0].reset();
+        },
+        error: function (err) {
+            showAlert("Something went wrong. Please try again later.", "danger");
+        },
+        complete: function () {
+            submitButton.prop("disabled", false).text("Send Message");
+        }
+    });
+});
+
+
 
 
 

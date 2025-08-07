@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScrolling();
     initBackToTop();
     initAnimations();
-    initContactForm();
 });
 
 //footer and navbar

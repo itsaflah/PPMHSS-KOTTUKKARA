@@ -107,69 +107,23 @@ function initAnimations() {
     });
 }
 
-function initContactForm() {
-    const contactForm = document.querySelector('#contact-form'); // your <form id="contact-form">
-
-    if (contactForm) {
-        contactForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-
-            // Extract form data
-            const name = formData.get('name') || '';
-            const email = formData.get('email') || '';
-            const phone = formData.get('phone') || '';
-            const subject = formData.get('subject') || '';
-            const message = formData.get('message') || '';
-
-            // Validation
-            if (!name || !email || !message) {
-                showAlert('Please fill in all required fields.', 'danger');
-                return;
-            }
-
-            if (!isValidEmail(email)) {
-                showAlert('Please enter a valid email address.', 'danger');
-                return;
-            }
-
-            // Add required hidden metadata
-            formData.append("formDataNameOrder", JSON.stringify(["name", "email", "phone", "subject", "message"]));
-            formData.append("formGoogleSheetName", "responses");
-            formData.append("formGoogleSendEmail", email);
-
-            // Convert to plain object
-            const plainFormData = {};
-            formData.forEach((value, key) => {
-                plainFormData[key] = value;
-            });
-
-            // Submit to Apps Script
-            fetch("https://script.google.com/macros/s/AKfycbyRc63l8szf6FRStM4_LxLOGUDiArdR6ta5tSwSnK3vzdXf3b1Pb57BiJtxcqSoHnU0nQ/exec", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
+$("#submit-form").submit((e)=>{
+            e.preventDefault()
+            $.ajax({
+                url:"",
+                data:$("#submit-form").serialize(),
+                method:"post",
+                success:function (response){
+                    alert("Form submitted successfully")
+                    window.location.reload()
+                    //window.location.href="https://google.com"
                 },
-                body: JSON.stringify(plainFormData)
+                error:function (err){
+                    alert("Something Error")
+    
+                }
             })
-                .then(res => res.json())
-                .then(response => {
-                    if (response.result === "success") {
-                        showAlert("Thank you! Your message was sent successfully.", "success");
-                        contactForm.reset();
-                    } else {
-                        showAlert("Oops! Something went wrong.", "danger");
-                        console.error(response);
-                    }
-                })
-                .catch(error => {
-                    showAlert("Failed to send. Try again later.", "danger");
-                    console.error("Error:", error);
-                });
-        });
-    }
-}
+        })
 
 // Email validation
 function isValidEmail(email) {

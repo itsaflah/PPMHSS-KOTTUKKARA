@@ -106,29 +106,6 @@ function initAnimations() {
     });
 }
 
-
-// Form submission
-$("#submit-form").submit(function (e) {
-            e.preventDefault();
-            
-            $.ajax({
-                url: "https://script.google.com/macros/s/AKfycbyRc63l8szf6FRStM4_LxLOGUDiArdR6ta5tSwSnK3vzdXf3b1Pb57BiJtxcqSoHnU0nQ/exec",
-                method: "POST",
-                data: $(this).serialize(),
-                success: function (response) {
-                    alert("Form submitted successfully");
-                    window.location.href = "https://google.com";
-                },
-                error: function (error) {
-                    alert("Something went wrong. Please try again.");
-                    console.error(error);
-                }
-            });
-        });
-
-
-
-
 // Gallery image modal functionality
 function initGalleryModal() {
     const galleryItems = document.querySelectorAll('.gallery-item');

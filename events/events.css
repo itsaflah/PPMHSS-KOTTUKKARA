@@ -10,20 +10,7 @@
   --white: #ffffff;
   --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-/* Feature Cards */
-.feature-card {
-  padding: 2rem;
-  background: var(--white);
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  height: 100%;
-}
 
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
 
 /* Event Cards */
 .event-card {
